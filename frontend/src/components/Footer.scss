@@ -1,0 +1,57 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: $space-xl $space-md;
+
+  &__inner {
+    @include flex-between;
+    flex-wrap: wrap;
+    gap: $space-md;
+  }
+
+  &__copy {
+    color: var(--text-muted);
+    font-size: $font-size-xs;
+  }
+
+  &__admin {
+    color: var(--text-muted);
+    font-size: $font-size-xs;
+    opacity: 0.45;
+    transition: opacity $transition-fast;
+    &:hover { opacity: 1; }
+  }
+}
+
+// Floating WhatsApp
+.wa-fab {
+  position: fixed;
+  bottom: 28px; right: 24px;
+  width: 56px; height: 56px;
+  border-radius: $radius-full;
+  background: #25D366;
+  color: #fff;
+  @include flex-center;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.5);
+  z-index: $z-toast;
+  text-decoration: none;
+
+  &__tooltip {
+    position: absolute;
+    right: 66px;
+    background: $color-navy;
+    color: $color-cream;
+    padding: $space-xs $space-md;
+    border-radius: $radius-md;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity $transition-fast;
+  }
+  &:hover .wa-fab__tooltip { opacity: 1; }
+}

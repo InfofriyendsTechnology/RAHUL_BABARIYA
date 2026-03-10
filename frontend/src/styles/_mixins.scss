@@ -1,0 +1,87 @@
+@use 'variables' as *;
+
+@mixin respond($bp) {
+  @if $bp == sm  { @media (min-width: #{$bp-sm})  { @content; } }
+  @if $bp == md  { @media (min-width: #{$bp-md})  { @content; } }
+  @if $bp == lg  { @media (min-width: #{$bp-lg})  { @content; } }
+  @if $bp == xl  { @media (min-width: #{$bp-xl})  { @content; } }
+  @if $bp == 2xl { @media (min-width: #{$bp-2xl}) { @content; } }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: $radius-xl;
+  box-shadow: var(--shadow-md);
+  transition: box-shadow $transition-normal, transform $transition-normal;
+  &:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+  }
+}
+
+@mixin btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-sm;
+  padding: $space-sm $space-xl;
+  background: var(--color-accent);
+  color: var(--text-inverse);
+  border: none;
+  border-radius: $radius-full;
+  font-family: $font-body;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: all $transition-normal;
+  &:hover { filter: brightness(1.08); transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+  &:active { transform: translateY(0); }
+}
+
+@mixin btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-sm;
+  padding: $space-sm $space-xl;
+  background: transparent;
+  color: var(--color-accent);
+  border: 2px solid var(--color-accent);
+  border-radius: $radius-full;
+  font-family: $font-body;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: all $transition-normal;
+  &:hover { background: var(--color-accent); color: var(--text-inverse); }
+}
+
+@mixin section-padding {
+  padding: $space-4xl $space-md;
+  @include respond(md) { padding: $space-4xl $space-xl; }
+}
+
+@mixin container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $space-md;
+  @include respond(md) { padding: 0 $space-xl; }
+}
+
+@mixin truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@mixin overlay-gradient {
+  background: linear-gradient(to top, rgba(30, 33, 45, 0.8) 0%, transparent 60%);
+}

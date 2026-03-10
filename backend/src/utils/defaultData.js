@@ -1,0 +1,50 @@
+export const DEFAULT_PORTFOLIO = {
+  owner: {
+    name:     'Rahul Babariya',
+    tagline:  'Photographer & Creative Director',
+    bio:      'Capturing life\'s most precious moments through the lens. Owner of Aurpix Studio & Dada Media.',
+    photo:    '',
+    phone:    '',
+    whatsapp: '',
+    email:    '',
+    address:  'Gujarat, India',
+  },
+  businesses: {
+    aurpix: {
+      name:        'Aurpix Studio',
+      tagline:     'Studio Photography Specialists',
+      description: 'Professional indoor photography studio specializing in newborn, baby milestone, maternity, family portraits and kids photography. Creative themed setups with world-class equipment.',
+      logo:        '',
+      services: [
+        { name: 'Newborn Photography',  description: 'Themed newborn shoots with props & soft lighting',      price: 'Contact for pricing' },
+        { name: 'Baby Milestones',      description: '1/2 year, 1st birthday & birthday shoots',              price: 'Contact for pricing' },
+        { name: 'Maternity Shoot',      description: 'Elegant indoor maternity photography',                   price: 'Contact for pricing' },
+        { name: 'Family Portrait',      description: 'Professional family & group portraits',                  price: 'Contact for pricing' },
+        { name: 'Kids Photography',     description: 'Fun & creative kids themed photo sessions',              price: 'Contact for pricing' },
+      ],
+      gallery:     [],
+      socialLinks: [],
+    },
+    dada: {
+      name:        'Dada Media',
+      tagline:     'Wedding & Event Photography',
+      description: 'Cinematic outdoor photography and videography for weddings, pre-weddings, mehndi ceremonies and special life events. Aerial drone photography available.',
+      logo:        '',
+      services: [
+        { name: 'Wedding Photography',     description: 'Full wedding day coverage with cinematic editing',    price: 'Contact for pricing' },
+        { name: 'Pre-Wedding Shoot',       description: 'Creative outdoor pre-wedding photography',            price: 'Contact for pricing' },
+        { name: 'Mehndi Ceremony',         description: 'Traditional ceremony documentation',                  price: 'Contact for pricing' },
+        { name: 'Baby Welcome Event',      description: 'Baby shower & welcome ceremony coverage',             price: 'Contact for pricing' },
+        { name: 'Drone / Aerial',          description: 'Stunning aerial perspectives for events',             price: 'Contact for pricing' },
+      ],
+      gallery:     [],
+      socialLinks: [],
+    },
+  },
+  socialLinks: [
+    { platform: 'instagram', label: 'Instagram',  url: '', icon: 'FaInstagram'  },
+    { platform: 'facebook',  label: 'Facebook',   url: '', icon: 'FaFacebook'   },
+    { platform: 'youtube',   label: 'YouTube',    url: '', icon: 'FaYoutube'    },
+    { platform: 'whatsapp',  label: 'WhatsApp',   url: '', icon: 'FaWhatsapp'   },
+  ],
+};

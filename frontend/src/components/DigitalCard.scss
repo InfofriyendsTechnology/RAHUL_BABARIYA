@@ -1,0 +1,45 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.connect {
+  background: var(--bg-secondary);
+
+  &__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2xl;
+    justify-content: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-md;
+    text-decoration: none;
+    min-width: 88px;
+    text-align: center;
+  }
+
+  &__icon {
+    width: 76px; height: 76px;
+    border-radius: $radius-2xl;
+    @include flex-center;
+    box-shadow: var(--shadow-lg);
+    transition: box-shadow $transition-normal, transform $transition-normal;
+    .connect__item:hover & {
+      box-shadow: var(--shadow-xl);
+      transform: scale(1.06);
+    }
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: var(--text-secondary);
+    transition: color $transition-fast;
+    .connect__item:hover & { color: var(--text-primary); }
+  }
+}

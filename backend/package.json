@@ -1,0 +1,24 @@
+{
+  "name": "rahul-babariya-backend",
+  "version": "1.0.0",
+  "description": "Backend for Rahul Babariya Portfolio",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "build": "npm install",
+    "seed": "node scripts/seedCloudinary.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^2.8.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.1.1",
+    "multer": "^2.0.2",
+    "nodemon": "^3.1.11"
+  }
+}

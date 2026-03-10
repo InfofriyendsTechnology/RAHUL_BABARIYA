@@ -1,0 +1,284 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+// ── Business Section ─────────────────────────────────────────────────────────
+.biz {
+  &--aurpix { background: var(--bg-primary); }
+  &--dada   { background: var(--bg-secondary); }
+
+  &__head {
+    text-align: center;
+    margin-bottom: $space-3xl;
+    .badge { margin-bottom: $space-lg; display: inline-block; }
+  }
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $space-lg;
+    margin-bottom: $space-md;
+    h2 {
+      font-family: $font-display;
+      font-size: $font-size-3xl;
+      @include respond(md) { font-size: $font-size-4xl; }
+    }
+  }
+
+  &__logo {
+    width: 64px; height: 64px;
+    object-fit: contain;
+    border-radius: $radius-xl;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    padding: $space-xs;
+    box-shadow: var(--shadow-sm);
+    @include respond(md) { width: 80px; height: 80px; }
+  }
+
+  &__tagline {
+    color: var(--text-secondary);
+    font-size: $font-size-base;
+    margin-top: $space-xs;
+  }
+
+  &__desc {
+    max-width: 640px;
+    margin: 0 auto;
+    color: var(--text-secondary);
+    font-size: $font-size-base;
+    line-height: 1.8;
+  }
+
+  &__slider-wrap {
+    margin-bottom: $space-3xl;
+    border-radius: $radius-2xl;
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+  }
+
+  // ── Services ──
+  &__services { margin-bottom: $space-3xl; }
+  &__services-title {
+    font-family: $font-display;
+    font-size: $font-size-xl;
+    text-align: center;
+    margin-bottom: $space-xl;
+  }
+  &__services-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $space-sm;
+    max-width: 780px;
+    margin: 0 auto;
+    @include respond(md) { grid-template-columns: repeat(2, 1fr); }
+  }
+  &__service {
+    display: flex;
+    align-items: flex-start;
+    gap: $space-md;
+    padding: $space-lg;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: $radius-xl;
+    transition: border-color $transition-fast, box-shadow $transition-fast;
+    &:hover { border-color: var(--color-accent); box-shadow: var(--shadow-md); }
+  }
+  &__service-num {
+    font-family: $font-display;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: var(--color-accent);
+    opacity: 0.45;
+    flex-shrink: 0;
+    min-width: 34px;
+    line-height: 1;
+  }
+  &__service-body {
+    flex: 1;
+    h4 {
+      font-size: $font-size-base;
+      font-weight: $font-weight-semibold;
+      font-family: $font-body;
+      margin-bottom: $space-xs;
+    }
+    p { color: var(--text-secondary); font-size: $font-size-sm; line-height: 1.6; }
+  }
+  &__service-price {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    color: var(--color-accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  // ── Business social links ──
+  &__socials {
+    padding-top: $space-xl;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+  }
+  &__socials-label {
+    font-size: $font-size-sm;
+    color: var(--text-muted);
+    margin-bottom: $space-md;
+    font-weight: $font-weight-medium;
+  }
+  &__socials-row {
+    display: flex;
+    gap: $space-md;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  &__social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-xs;
+    padding: $space-xs $space-lg;
+    border-radius: $radius-full;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    text-decoration: none;
+    transition: all $transition-fast;
+    &:hover { color: var(--color-accent); border-color: var(--color-accent); background: rgba(182,137,115,0.07); }
+  }
+}
+
+// ── Photo Slider ──────────────────────────────────────────────────────────────
+.slider {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: var(--bg-card);
+  overflow: hidden;
+  @include respond(md) { aspect-ratio: 16/7; }
+
+  &--empty {
+    @include flex-center;
+    flex-direction: column;
+    gap: $space-md;
+    color: var(--text-muted);
+    font-size: $font-size-sm;
+    background: var(--bg-card);
+    border: 2px dashed var(--border-color);
+    min-height: 280px;
+    border-radius: $radius-2xl;
+    aspect-ratio: unset;
+  }
+
+  &__track {
+    position: relative;
+    width: 100%; height: 100%;
+    overflow: hidden;
+  }
+  &__slide {
+    position: absolute;
+    inset: 0;
+    img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      cursor: zoom-in;
+      display: block;
+    }
+  }
+  &__caption {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: $space-3xl $space-xl $space-lg;
+    background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, transparent 100%);
+    color: #fff;
+    font-size: $font-size-sm;
+    text-align: center;
+  }
+
+  &__btn {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    width: 44px; height: 44px;
+    border-radius: $radius-full;
+    @include flex-center;
+    cursor: pointer;
+    transition: background $transition-fast;
+    z-index: 2;
+    &:hover { background: rgba(0,0,0,0.6); }
+    &--prev { left: $space-md; }
+    &--next { right: $space-md; }
+  }
+
+  &__dots {
+    position: absolute;
+    bottom: $space-lg;
+    left: 50%; transform: translateX(-50%);
+    display: flex;
+    gap: $space-xs;
+    z-index: 2;
+  }
+  &__dot {
+    width: 7px; height: 7px;
+    border-radius: $radius-full;
+    border: none;
+    background: rgba(255,255,255,0.4);
+    cursor: pointer;
+    transition: all $transition-fast;
+    padding: 0;
+    &.active { background: #fff; width: 22px; }
+  }
+
+  &__counter {
+    position: absolute;
+    top: $space-md; right: $space-md;
+    background: rgba(0,0,0,0.45);
+    color: #fff;
+    font-size: $font-size-xs;
+    padding: 3px $space-sm;
+    border-radius: $radius-full;
+    z-index: 2;
+    backdrop-filter: blur(4px);
+  }
+}
+
+// ── Lightbox ──────────────────────────────────────────────────────────────────
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.93);
+  z-index: $z-modal;
+  @include flex-center;
+  flex-direction: column;
+  gap: $space-md;
+  padding: $space-xl;
+
+  &__close {
+    position: absolute;
+    top: $space-xl; right: $space-xl;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #fff;
+    width: 44px; height: 44px;
+    border-radius: $radius-full;
+    @include flex-center;
+    cursor: pointer;
+    transition: background $transition-fast;
+    &:hover { background: rgba(255,255,255,0.2); }
+  }
+  &__img {
+    max-width: min(90vw, 960px);
+    max-height: 82vh;
+    object-fit: contain;
+    border-radius: $radius-lg;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  }
+  &__caption {
+    color: rgba(255,255,255,0.75);
+    font-size: $font-size-sm;
+    text-align: center;
+  }
+}
