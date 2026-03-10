@@ -302,29 +302,48 @@
   }
 }
 
-// ── Business photo slideshow ───────────────────────────────────────────────
+// ── Business photo slideshow — 9:16 with blurred background fill ───────────
 .biz-slide {
   position: relative;
   width: 100%;
-  background: var(--bg-card);
+  aspect-ratio: 9 / 16;            // strict 9:16 portrait
+  overflow: hidden;
   border-top: 1px solid var(--border-color);
+  background: #000;
 
+  // Blurred background layer — same image stretched + blurred
+  &__bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: blur(22px);
+    transform: scale(1.12);        // hide blur edges
+    opacity: 0.55;
+    animation: slideIn 0.5s ease-out;
+  }
+
+  // Actual image — contained, centered, no crop
   &__img {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    max-height: 300px;
-    object-fit: contain;           // show full image — no cropping
+    height: 100%;
+    object-fit: contain;
     display: block;
+    z-index: 1;
     animation: slideIn 0.4s ease-out;
   }
 
   &__dots {
     position: absolute;
-    bottom: $space-sm;
+    bottom: $space-md;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     gap: 5px;
     align-items: center;
+    z-index: 2;
   }
 
   &__dot {
@@ -337,6 +356,7 @@
     flex-shrink: 0;
     background: rgba(255, 255, 255, 0.45);
     transition: width $transition-normal, background $transition-normal;
+    z-index: 2;
 
     &.active {
       background: #fff;

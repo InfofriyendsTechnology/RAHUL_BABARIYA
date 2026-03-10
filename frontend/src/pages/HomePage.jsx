@@ -236,31 +236,26 @@ const BizTile = ({ biz, delay = 0, onContact }) => {
         )}
       </div>
 
-      {/* Photo slideshow — full bleed, at bottom */}
+      {/* Photo slideshow — 9:16 with blurred bg fill */}
       {gallery.length > 0 && (
         <div
           className="biz-slide"
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
+          {/* Blurred background — same image scaled+blurred to fill 9:16 */}
+          <div
+            key={`bg-${slideIdx}`}
+            className="biz-slide__bg"
+            style={{ backgroundImage: `url(${gallery[slideIdx].url})` }}
+          />
+          {/* Actual image — contained, no crop */}
           <img
             key={slideIdx}
             src={gallery[slideIdx].url}
             alt={gallery[slideIdx].caption || biz.name}
             className="biz-slide__img"
           />
-          {gallery.length > 1 && (
-            <div className="biz-slide__dots">
-              {gallery.map((_, i) => (
-                <button
-                  key={i}
-                  className={`biz-slide__dot${i === slideIdx ? ' active' : ''}`}
-                  onClick={() => setSlideIdx(i)}
-                  aria-label={`Slide ${i + 1}`}
-                />
-              ))}
-            </div>
-          )}
         </div>
       )}
     </motion.div>
