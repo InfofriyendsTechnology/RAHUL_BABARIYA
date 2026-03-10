@@ -13,9 +13,9 @@ app.use(cors({
       FRONTEND_URL,
       'http://localhost:5173',
       'http://localhost:4173',
+      'https://rahul-babariya.vercel.app',
     ];
-    // Allow any *.vercel.app origin (preview + production deployments)
-    if (!origin || allowed.includes(origin) || origin.endsWith('.vercel.app')) {
+    if (!origin || allowed.includes(origin)) {
       cb(null, true);
     } else {
       cb(new Error('Not allowed by CORS'));
@@ -25,9 +25,6 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-
-// Handle OPTIONS preflight for all routes
-app.options('*', cors());
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
