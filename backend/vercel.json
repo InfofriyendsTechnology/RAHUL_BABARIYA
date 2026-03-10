@@ -1,7 +1,18 @@
 {
   "version": 2,
   "builds": [{ "src": "src/server.js", "use": "@vercel/node" }],
-  "routes": [{ "src": "/(.*)", "dest": "src/server.js" }],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/server.js",
+      "headers": {
+        "Access-Control-Allow-Origin": "https://rahul-babariya.vercel.app",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type,Authorization",
+        "Access-Control-Allow-Credentials": "true"
+      }
+    }
+  ],
   "env": {
     "NODE_ENV": "production"
   }

@@ -8,15 +8,26 @@ import { PORT, FRONTEND_URL } from './config/config.js';
 const app = express();
 
 app.use(cors({
-  origin: [
-    FRONTEND_URL,
-    'http://localhost:5173',
-    'http://localhost:4173',
-  ],
+  origin: (origin, cb) => {
+    const allowed = [
+      FRONTEND_URL,
+      'http://localhost:5173',
+      'http://localhost:4173',
+    ];
+    // Allow any *.vercel.app origin (preview + production deployments)
+    if (!origin || allowed.includes(origin) || origin.endsWith('.vercel.app')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+// Handle OPTIONS preflight for all routes
+app.options('*', cors());
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
