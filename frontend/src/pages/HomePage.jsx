@@ -127,22 +127,19 @@ const BRAND_COLOR = {
   maps:      null,       // component has own color
 };
 
-// ── Business tile with slideshow ─────────────────────────────────────────────
-const BizTile = ({ biz, delay = 0, onContact }) => {
-  const [slideIdx,  setSlideIdx]  = useState(0);
+// ── Business Detail Modal ──────────────────────────────────────────────────
+const BizDetailModal = ({ biz, onClose, onContact }) => {
+  const [slideIdx, setSlideIdx] = useState(0);
   const touchStartX = useRef(null);
 
-  const gallery  = (biz?.gallery    || []).filter(g => g.url);
-  // Filter maps out of socials — we show ONE maps icon separately below
-  const socials   = (biz?.socialLinks || []).filter(s => s.url && s.platform !== 'maps');
-  // Maps URL: prefer manual entry in socialLinks, else auto from address
-  const mapsEntry  = (biz?.socialLinks || []).find(s => s.platform === 'maps' && s.url);
+  const gallery = (biz?.gallery || []).filter(g => g.url);
+  const socials = (biz?.socialLinks || []).filter(s => s.url && s.platform !== 'maps');
+  const mapsEntry = (biz?.socialLinks || []).find(s => s.platform === 'maps' && s.url);
   const bizMapsUrl = mapsEntry?.url
     || (biz?.address
       ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(biz.address)}`
       : null);
 
-  // Auto-advance every 3.5 s
   useEffect(() => {
     if (gallery.length <= 1) return;
     const t = setInterval(
@@ -151,10 +148,8 @@ const BizTile = ({ biz, delay = 0, onContact }) => {
     return () => clearInterval(t);
   }, [gallery.length]);
 
-  if (!biz?.name) return null;
-
   const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
-  const onTouchEnd   = (e) => {
+  const onTouchEnd = (e) => {
     if (touchStartX.current === null || gallery.length < 2) return;
     const diff = e.changedTouches[0].clientX - touchStartX.current;
     if (Math.abs(diff) > 40)
@@ -166,98 +161,120 @@ const BizTile = ({ biz, delay = 0, onContact }) => {
   };
 
   return (
-    <motion.div
-      className="biz-tile"
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay }}
-    >
-      {/* Top: logo + name + tagline */}
-      <div className="biz-tile__top">
-        <div className="biz-tile__head">
-          <div className="biz-tile__logo-wrap">
-            {biz.logo
-              ? <img src={biz.logo} alt={biz.name} className="biz-tile__logo" />
-              : <div className="biz-tile__logo-ph"><FiCamera size={18} /></div>
-            }
-          </div>
-          <div className="biz-tile__meta">
-            <span className="biz-tile__name">{biz.name}</span>
-            {biz.tagline && <span className="biz-tile__tagline">{biz.tagline}</span>}
-          </div>
-        </div>
+    <div className="biz-modal-overlay" onClick={onClose}>
+      <motion.div
+        className="biz-modal"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 50 }}
+        transition={{ duration: 0.3 }}
+        onClick={e => e.stopPropagation()}
+      >
+        <button className="biz-modal__close" onClick={onClose}>
+          <FiX size={24} />
+        </button>
 
-        {/* All icons in ONE row: WhatsApp (popup) + social links together */}
-        {(biz.phone || socials.length > 0 || bizMapsUrl) && (
-          <div className="biz-tile__socials">
-            {/* WhatsApp icon — triggers 3-option popup */}
+        {/* Business Info */}
+        <div className="biz-modal__info">
+          <div className="biz-modal__header">
+            {biz.logo && <img src={biz.logo} alt={biz.name} className="biz-modal__logo" />}
+            <div>
+              <h2 className="biz-modal__name">{biz.name}</h2>
+              {biz.tagline && <p className="biz-modal__tagline">{biz.tagline}</p>}
+            </div>
+          </div>
+
+          {/* Social Icons */}
+          <div className="biz-modal__socials">
             {biz.phone && (
               <button
-                className="biz-tile__social biz-tile__social--btn"
-                onClick={() => onContact(biz)}
+                className="biz-modal__social"
+                onClick={() => { onContact(biz); onClose(); }}
                 title="Contact"
               >
                 <FaWhatsapp size={24} color="#25D366" />
               </button>
             )}
-            {/* Auto Google Maps icon from business address */}
             {bizMapsUrl && (
               <a
                 href={bizMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="biz-tile__social"
+                className="biz-modal__social"
                 title="View on Google Maps"
               >
                 <MapsIcon size={24} />
               </a>
             )}
-            {/* Social platform links */}
             {socials.map((s, i) => {
-              const Icon  = ICON_MAP[s.platform] || FaYoutube;
-              const color = BRAND_COLOR[s.platform];   // null = SVG has own colour
+              const Icon = ICON_MAP[s.platform] || FaYoutube;
+              const color = BRAND_COLOR[s.platform];
               return (
                 <a
                   key={i}
                   href={s.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="biz-tile__social"
+                  className="biz-modal__social"
                   title={s.label}
                 >
-                  {color
-                    ? <Icon size={24} color={color} />
-                    : <Icon size={24} />
-                  }
+                  {color ? <Icon size={24} color={color} /> : <Icon size={24} />}
                 </a>
               );
             })}
           </div>
-        )}
-      </div>
-
-      {/* Photo slideshow — 9:16 with blurred bg fill */}
-      {gallery.length > 0 && (
-        <div
-          className="biz-slide"
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
-        >
-          {/* Blurred background — same image scaled+blurred to fill 9:16 */}
-          <div
-            key={`bg-${slideIdx}`}
-            className="biz-slide__bg"
-            style={{ backgroundImage: `url(${gallery[slideIdx].url})` }}
-          />
-          {/* Actual image — contained, no crop */}
-          <img
-            key={slideIdx}
-            src={gallery[slideIdx].url}
-            alt={gallery[slideIdx].caption || biz.name}
-            className="biz-slide__img"
-          />
         </div>
-      )}
+
+        {/* Gallery */}
+        {gallery.length > 0 && (
+          <div
+            className="biz-modal__gallery"
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+          >
+            <div
+              key={`bg-${slideIdx}`}
+              className="biz-modal__gallery-bg"
+              style={{ backgroundImage: `url(${gallery[slideIdx].url})` }}
+            />
+            <img
+              key={slideIdx}
+              src={gallery[slideIdx].url}
+              alt={gallery[slideIdx].caption || biz.name}
+              className="biz-modal__gallery-img"
+            />
+          </div>
+        )}
+      </motion.div>
+    </div>
+  );
+};
+
+// ── Business tile with slideshow ─────────────────────────────────────────────
+const BizTile = ({ biz, delay = 0, onOpenDetail }) => {
+  const touchStartX = useRef(null);
+
+  if (!biz?.name) return null;
+
+  return (
+    <motion.div
+      className="biz-tile"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay }}
+      onClick={() => onOpenDetail(biz)}
+      style={{ cursor: 'pointer' }}
+    >
+      <div className="biz-tile__content">
+        <div className="biz-tile__logo-wrap">
+          {biz.logo
+            ? <img src={biz.logo} alt={biz.name} className="biz-tile__logo" />
+            : <div className="biz-tile__logo-ph"><FiCamera size={24} /></div>
+          }
+        </div>
+        <h3 className="biz-tile__name">{biz.name}</h3>
+        {biz.tagline && <p className="biz-tile__tagline">{biz.tagline}</p>}
+      </div>
     </motion.div>
   );
 };
@@ -277,6 +294,7 @@ const HomePage = () => {
   const [data,       setData]      = useState(DEFAULT);
   const [loading,    setLoading]   = useState(true);
   const [bizContact, setBizContact] = useState(null); // biz object when popup open
+  const [bizDetail,  setBizDetail] = useState(null);  // biz object for detail modal
   const { isDark, toggleTheme } = useTheme();
 
   useEffect(() => {
@@ -312,59 +330,87 @@ const HomePage = () => {
         )}
       </AnimatePresence>
 
+      {/* Business detail modal */}
+      <AnimatePresence>
+        {bizDetail && (
+          <BizDetailModal 
+            biz={bizDetail} 
+            onClose={() => setBizDetail(null)}
+            onContact={setBizContact}
+          />
+        )}
+      </AnimatePresence>
+
       {/* ── Card ── */}
       <main className="dc__card">
-
-        {/* Profile */}
-        <motion.section
-          className="dc-profile"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="dc-profile__av-ring">
-            {owner?.photo
-              ? <img src={owner.photo} alt={owner.name} className="dc-profile__av" />
-              : <div className="dc-profile__av-ph"><FiCamera size={30} /></div>
-            }
-          </div>
-          <h1 className="dc-profile__name">{owner?.name || 'Rahul Babariya'}</h1>
-          <p className="dc-profile__title">{owner?.tagline || 'Photographer & Creative Director'}</p>
-          {owner?.address && (
-            <span className="dc-profile__loc">
-              <FiMapPin size={10} /> {owner.address}
-            </span>
-          )}
-        </motion.section>
-
-        {/* Social quick-links — Instagram & YouTube only (official logos) */}
-        {(igLink || ytLink) && (
+        {/* Tree Structure */}
+        {/* Tree Structure */}
+        <div className="tree-structure">
+          {/* Owner Node */}
           <motion.div
-            className="dc-actions"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
+            className="tree-node tree-node--owner"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
-            {igLink && (
-              <a href={igLink} target="_blank" rel="noopener noreferrer" className="dc-act dc-act--insta">
-                <IgIcon size={22} /><span>Instagram</span>
-              </a>
-            )}
-            {ytLink && (
-              <a href={ytLink} target="_blank" rel="noopener noreferrer" className="dc-act dc-act--yt">
-                <FaYoutube size={22} /><span>YouTube</span>
-              </a>
-            )}
+            <div className="tree-node__avatar">
+              {owner?.photo
+                ? <img src={owner.photo} alt={owner.name} />
+                : <FiCamera size={28} />
+              }
+            </div>
+            <h2 className="tree-node__name">{owner?.name || 'Rahul Babariya'}</h2>
+            <p className="tree-node__title">{owner?.tagline || 'Photographer & Creative Director'}</p>
           </motion.div>
-        )}
 
-        {/* Divider */}
-        <div className="dc-divider" />
+          {/* Connector Line */}
+          <motion.div
+            className="tree-connector"
+            initial={{ scaleY: 0 }}
+            animate={{ scaleY: 1 }}
+            transition={{ duration: 0.4, delay: 0.4 }}
+          />
 
-        {/* Business tiles */}
-        <div className="dc-biz">
-          {businesses?.aurpix && <BizTile biz={businesses.aurpix} delay={0.15} onContact={setBizContact} />}
-          {businesses?.dada   && <BizTile biz={businesses.dada}   delay={0.25} onContact={setBizContact} />}
+          {/* Business Branches */}
+          <div className="tree-branches">
+            {businesses?.aurpix && (
+              <motion.div
+                className="tree-node tree-node--business"
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+                onClick={() => setBizDetail(businesses.aurpix)}
+              >
+                <div className="tree-node__logo">
+                  {businesses.aurpix.logo
+                    ? <img src={businesses.aurpix.logo} alt={businesses.aurpix.name} />
+                    : <FiCamera size={24} />
+                  }
+                </div>
+                <h3 className="tree-node__biz-name">{businesses.aurpix.name}</h3>
+                <p className="tree-node__biz-tag">{businesses.aurpix.tagline}</p>
+              </motion.div>
+            )}
+
+            {businesses?.dada && (
+              <motion.div
+                className="tree-node tree-node--business"
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+                onClick={() => setBizDetail(businesses.dada)}
+              >
+                <div className="tree-node__logo">
+                  {businesses.dada.logo
+                    ? <img src={businesses.dada.logo} alt={businesses.dada.name} />
+                    : <FiCamera size={24} />
+                  }
+                </div>
+                <h3 className="tree-node__biz-name">{businesses.dada.name}</h3>
+                <p className="tree-node__biz-tag">{businesses.dada.tagline}</p>
+              </motion.div>
+            )}
+          </div>
         </div>
 
       </main>

@@ -3,134 +3,135 @@
 // =============================================================================
 
 // Brand Palette
-$color-cream:  #FAF3E0;
-$color-sand:   #EABF9F;
-$color-earth:  #B68973;
-$color-navy:   #1E212D;
+$color-cream: #FAF3E0;
+$color-sand: #EABF9F;
+$color-earth: #B68973;
+$color-navy: #1E212D;
 
 // Light mode tokens
-:root, [data-theme="light"] {
-  --bg-primary:        #{$color-cream};
-  --bg-secondary:      #F5EDD6;
-  --bg-card:           #FFFFFF;
-  --bg-card-hover:     #FFF8EE;
-  --bg-overlay:        rgba(250, 243, 224, 0.95);
+:root,
+[data-theme="light"] {
+  --bg-primary: #{$color-cream};
+  --bg-secondary: #F5EDD6;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #FFF8EE;
+  --bg-overlay: rgba(250, 243, 224, 0.95);
 
-  --text-primary:      #{$color-navy};
-  --text-secondary:    #5C5F6B;
-  --text-muted:        #9CA3AF;
-  --text-inverse:      #{$color-cream};
+  --text-primary: #{$color-navy};
+  --text-secondary: #5C5F6B;
+  --text-muted: #9CA3AF;
+  --text-inverse: #{$color-cream};
 
-  --color-accent:      #{$color-earth};
+  --color-accent: #{$color-earth};
   --color-accent-light:#{$color-sand};
   --color-accent-dark: #8C6350;
 
-  --border-color:      rgba(182, 137, 115, 0.25);
-  --border-strong:     rgba(182, 137, 115, 0.5);
+  --border-color: rgba(182, 137, 115, 0.25);
+  --border-strong: rgba(182, 137, 115, 0.5);
 
-  --shadow-sm:   0 1px 3px rgba(30, 33, 45, 0.06);
-  --shadow-md:   0 4px 12px rgba(30, 33, 45, 0.10);
-  --shadow-lg:   0 10px 30px rgba(30, 33, 45, 0.14);
-  --shadow-xl:   0 20px 50px rgba(30, 33, 45, 0.18);
+  --shadow-sm: 0 1px 3px rgba(30, 33, 45, 0.06);
+  --shadow-md: 0 4px 12px rgba(30, 33, 45, 0.10);
+  --shadow-lg: 0 10px 30px rgba(30, 33, 45, 0.14);
+  --shadow-xl: 0 20px 50px rgba(30, 33, 45, 0.18);
   --shadow-glow: 0 0 30px rgba(182, 137, 115, 0.25);
 
-  --nav-bg:      rgba(250, 243, 224, 0.9);
+  --nav-bg: rgba(250, 243, 224, 0.9);
 }
 
 // Dark mode tokens
 [data-theme="dark"] {
-  --bg-primary:        #16181F;
-  --bg-secondary:      #{$color-navy};
-  --bg-card:           #252833;
-  --bg-card-hover:     #2E3240;
-  --bg-overlay:        rgba(22, 24, 31, 0.95);
+  --bg-primary: #16181F;
+  --bg-secondary: #{$color-navy};
+  --bg-card: #252833;
+  --bg-card-hover: #2E3240;
+  --bg-overlay: rgba(22, 24, 31, 0.95);
 
-  --text-primary:      #{$color-cream};
-  --text-secondary:    #{$color-sand};
-  --text-muted:        #6B7280;
-  --text-inverse:      #{$color-navy};
+  --text-primary: #{$color-cream};
+  --text-secondary: #{$color-sand};
+  --text-muted: #6B7280;
+  --text-inverse: #{$color-navy};
 
-  --color-accent:      #{$color-sand};
+  --color-accent: #{$color-sand};
   --color-accent-light:#{$color-earth};
   --color-accent-dark: #{$color-cream};
 
-  --border-color:      rgba(234, 191, 159, 0.15);
-  --border-strong:     rgba(234, 191, 159, 0.35);
+  --border-color: rgba(234, 191, 159, 0.15);
+  --border-strong: rgba(234, 191, 159, 0.35);
 
-  --shadow-sm:   0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md:   0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg:   0 10px 30px rgba(0, 0, 0, 0.5);
-  --shadow-xl:   0 20px 50px rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.6);
   --shadow-glow: 0 0 30px rgba(234, 191, 159, 0.2);
 
-  --nav-bg:      rgba(22, 24, 31, 0.92);
+  --nav-bg: rgba(22, 24, 31, 0.92);
 }
 
 // SCSS semantic aliases (use CSS vars at runtime)
-$bg-primary:      var(--bg-primary);
-$bg-secondary:    var(--bg-secondary);
-$bg-card:         var(--bg-card);
-$text-primary:    var(--text-primary);
-$text-secondary:  var(--text-secondary);
-$color-accent:    var(--color-accent);
-$border-color:    var(--border-color);
-$shadow-md:       var(--shadow-md);
-$shadow-lg:       var(--shadow-lg);
+$bg-primary: var(--bg-primary);
+$bg-secondary: var(--bg-secondary);
+$bg-card: var(--bg-card);
+$text-primary: var(--text-primary);
+$text-secondary: var(--text-secondary);
+$color-accent: var(--color-accent);
+$border-color: var(--border-color);
+$shadow-md: var(--shadow-md);
+$shadow-lg: var(--shadow-lg);
 
 // Typography
-$font-display: 'Playfair Display', Georgia, serif;
-$font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+$font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+$font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
-$font-size-xs:   0.75rem;
-$font-size-sm:   0.875rem;
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.875rem;
 $font-size-base: 1rem;
-$font-size-md:   1.125rem;
-$font-size-lg:   1.25rem;
-$font-size-xl:   1.5rem;
-$font-size-2xl:  1.875rem;
-$font-size-3xl:  2.25rem;
-$font-size-4xl:  3rem;
-$font-size-5xl:  3.75rem;
+$font-size-md: 1.125rem;
+$font-size-lg: 1.25rem;
+$font-size-xl: 1.5rem;
+$font-size-2xl: 1.875rem;
+$font-size-3xl: 2.25rem;
+$font-size-4xl: 3rem;
+$font-size-5xl: 3.75rem;
 
-$font-weight-light:    300;
-$font-weight-normal:   400;
-$font-weight-medium:   500;
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
 $font-weight-semibold: 600;
-$font-weight-bold:     700;
-$font-weight-black:    900;
+$font-weight-bold: 700;
+$font-weight-black: 900;
 
 // Spacing
-$space-xs:  0.25rem;
-$space-sm:  0.5rem;
-$space-md:  1rem;
-$space-lg:  1.5rem;
-$space-xl:  2rem;
+$space-xs: 0.25rem;
+$space-sm: 0.5rem;
+$space-md: 1rem;
+$space-lg: 1.5rem;
+$space-xl: 2rem;
 $space-2xl: 3rem;
 $space-3xl: 4rem;
 $space-4xl: 6rem;
 
 // Border Radius
-$radius-sm:   0.375rem;
-$radius-md:   0.5rem;
-$radius-lg:   0.75rem;
-$radius-xl:   1rem;
-$radius-2xl:  1.5rem;
+$radius-sm: 0.375rem;
+$radius-md: 0.5rem;
+$radius-lg: 0.75rem;
+$radius-xl: 1rem;
+$radius-2xl: 1.5rem;
 $radius-full: 9999px;
 
 // Transitions
-$transition-fast:   0.15s ease-out;
+$transition-fast: 0.15s ease-out;
 $transition-normal: 0.3s ease-out;
-$transition-slow:   0.5s ease-out;
+$transition-slow: 0.5s ease-out;
 
 // Breakpoints
-$bp-sm:  640px;
-$bp-md:  768px;
-$bp-lg:  1024px;
-$bp-xl:  1280px;
+$bp-sm: 640px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+$bp-xl: 1280px;
 $bp-2xl: 1536px;
 
 // Z-Index
-$z-nav:     100;
+$z-nav: 100;
 $z-overlay: 200;
-$z-modal:   300;
-$z-toast:   400;
+$z-modal: 300;
+$z-toast: 400;

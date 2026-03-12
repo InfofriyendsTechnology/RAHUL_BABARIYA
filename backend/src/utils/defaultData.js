@@ -13,7 +13,7 @@ export const DEFAULT_PORTFOLIO = {
     aurpix: {
       name:        'Aurpix Studio',
       tagline:     'Studio Photography Specialists',
-      description: 'Professional indoor photography studio specializing in newborn, baby milestone, maternity, family portraits and kids photography. Creative themed setups with world-class equipment.',
+      description: 'Newborn Photography\nBaby Milestones\nMaternity Shoots\nFamily Portraits\nKids Photography',
       logo:        '',
       services: [
         { name: 'Newborn Photography',  description: 'Themed newborn shoots with props & soft lighting',      price: 'Contact for pricing' },
@@ -28,7 +28,7 @@ export const DEFAULT_PORTFOLIO = {
     dada: {
       name:        'Dada Media',
       tagline:     'Wedding & Event Photography',
-      description: 'Cinematic outdoor photography and videography for weddings, pre-weddings, mehndi ceremonies and special life events. Aerial drone photography available.',
+      description: 'Wedding Photography\nPre-Wedding Shoots\nMehndi Ceremonies\nEvent Coverage\nDrone Photography',
       logo:        '',
       services: [
         { name: 'Wedding Photography',     description: 'Full wedding day coverage with cinematic editing',    price: 'Contact for pricing' },

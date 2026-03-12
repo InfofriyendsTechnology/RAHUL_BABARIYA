@@ -12,17 +12,17 @@
 
   &__card {
     width: 100%;
-    max-width: 480px;
-    padding: $space-lg $space-lg $space-xl;
+    max-width: 680px;  // increased for better horizontal space
+    padding: $space-xl $space-lg $space-xl;
     display: flex;
     flex-direction: column;
-    gap: $space-lg;
+    gap: $space-xl;
     flex: 1;
   }
 
   &__footer {
     width: 100%;
-    max-width: 480px;
+    max-width: 680px;
     padding: $space-md;
     font-size: $font-size-xs;
     color: var(--text-muted);
@@ -94,12 +94,13 @@
   }
 
   &__name {
-    font-family: $font-display;
+    font-family: $font-body;
     font-size: $font-size-2xl;
     font-weight: $font-weight-bold;
     color: var(--text-primary);
     margin: 0;
     line-height: 1.15;
+    letter-spacing: -0.02em;
   }
 
   &__title {
@@ -159,59 +160,244 @@
   &--yt    { background: #FF0000; color: #fff; }
 }
 
-// ── Divider ───────────────────────────────────────────────────────────────────
-.dc-divider {
-  height: 1px;
-  background: var(--border-color);
-}
-
-// ── Business tiles ────────────────────────────────────────────────────────────
-.dc-biz {
+// ── Tree Structure ────────────────────────────────────────────────────────
+.tree-structure {
   display: flex;
   flex-direction: column;
-  gap: $space-md;
+  align-items: center;
+  gap: $space-xl;
+  padding: $space-xl 0;
+}
+
+.tree-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: $space-sm;
+
+  &--owner {
+    .tree-node__avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: $radius-full;
+      overflow: hidden;
+      background: var(--bg-secondary);
+      border: 4px solid var(--color-accent);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      @include flex-center;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      svg {
+        color: var(--text-muted);
+      }
+
+      @media (max-width: 600px) {
+        width: 100px;
+        height: 100px;
+      }
+    }
+
+    .tree-node__name {
+      font-family: $font-body;
+      font-size: $font-size-3xl;
+      font-weight: $font-weight-bold;
+      color: var(--text-primary);
+      margin: 0;
+      line-height: 1.2;
+
+      @media (max-width: 600px) {
+        font-size: $font-size-2xl;
+      }
+    }
+
+    .tree-node__title {
+      font-size: $font-size-base;
+      color: var(--color-accent);
+      margin: 0;
+      font-weight: $font-weight-semibold;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      position: relative;
+      padding: $space-xs $space-md;
+      background: linear-gradient(135deg, var(--color-accent), var(--color-accent-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+
+      @media (max-width: 600px) {
+        font-size: $font-size-sm;
+      }
+    }
+  }
+
+  &--business {
+    cursor: pointer;
+    padding: $space-lg;
+    border-radius: $radius-2xl;
+    transition: all $transition-normal;
+    background: transparent;
+
+    &:hover {
+      transform: translateY(-4px) scale(1.02);
+      
+      .tree-node__logo {
+        transform: scale(1.1);
+        border-color: var(--color-accent);
+      }
+    }
+
+    &:active {
+      transform: translateY(-2px) scale(1);
+    }
+
+    .tree-node__logo {
+      width: 80px;
+      height: 80px;
+      border-radius: $radius-full;
+      overflow: hidden;
+      background: var(--bg-card);
+      border: 3px solid var(--border-color);
+      box-shadow: var(--shadow-md);
+      @include flex-center;
+      transition: all $transition-fast;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      svg {
+        color: var(--text-muted);
+      }
+
+      @media (max-width: 600px) {
+        width: 70px;
+        height: 70px;
+      }
+    }
+
+    .tree-node__biz-name {
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semibold;
+      color: var(--text-primary);
+      margin: $space-xs 0 0 0;
+      line-height: 1.2;
+
+      @media (max-width: 600px) {
+        font-size: $font-size-base;
+      }
+    }
+
+    .tree-node__biz-tag {
+      font-size: $font-size-xs;
+      color: var(--text-muted);
+      margin: 0;
+      font-weight: $font-weight-light;
+      letter-spacing: 0.03em;
+
+      @media (max-width: 600px) {
+        font-size: 0.7rem;
+      }
+    }
+  }
+}
+
+.tree-connector {
+  width: 2px;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--color-accent), var(--border-color));
+  transform-origin: top;
+
+  @media (max-width: 600px) {
+    height: 40px;
+  }
+}
+
+.tree-branches {
+  display: flex;
+  gap: $space-2xl;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--border-color) 20%, var(--border-color) 80%, transparent);
+  }
+
+  @media (max-width: 600px) {
+    gap: $space-md;
+  }
 }
 
 .biz-tile {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: $radius-xl;
-  box-shadow: var(--shadow-sm);
+  border-radius: $radius-2xl;
+  box-shadow: var(--shadow-md);
   overflow: hidden;
-  transition: box-shadow $transition-fast, transform $transition-fast;
+  transition: all $transition-normal;
+  cursor: pointer;
 
   &:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px) scale(1.02);
+    border-color: var(--border-strong);
   }
 
-  // Padded top section (logo + name + socials)
-  &__top {
-    padding: $space-md $space-lg $space-sm;
+  &:active {
+    transform: translateY(-2px) scale(1);
   }
 
-  &__head {
+  &__content {
+    padding: $space-2xl $space-xl;
     display: flex;
+    flex-direction: column;
     align-items: center;
+    text-align: center;
     gap: $space-md;
-    margin-bottom: $space-sm;
+    min-height: 280px;
+    justify-content: center;
+
+    @media (max-width: 600px) {
+      padding: $space-xl $space-lg;
+      min-height: 240px;
+    }
   }
+
 
   &__logo-wrap {
-    width: 52px;
-    height: 52px;
-    border-radius: $radius-full;   // round logo
+    width: 96px;
+    height: 96px;
+    border-radius: $radius-full;
     overflow: hidden;
     background: var(--bg-secondary);
-    border: 2px solid var(--border-strong);
+    border: 4px solid var(--border-strong);
     flex-shrink: 0;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-lg);
+
+    @media (max-width: 600px) {
+      width: 80px;
+      height: 80px;
+      border: 3px solid var(--border-strong);
+    }
   }
 
   &__logo {
     width: 100%;
     height: 100%;
-    object-fit: cover;             // fills round circle nicely
+    object-fit: cover;
     display: block;
   }
 
@@ -222,25 +408,121 @@
     color: var(--text-muted);
   }
 
-  &__meta {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
 
   &__name {
-    font-weight: $font-weight-semibold;
-    font-size: $font-size-base;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-2xl;
     color: var(--text-primary);
     line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin: 0;
+
+    @media (max-width: 600px) {
+      font-size: $font-size-xl;
+    }
   }
 
   &__tagline {
-    font-size: $font-size-xs;
+    font-size: $font-size-base;
     color: var(--text-muted);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
+    font-weight: $font-weight-medium;
+    margin: 0;
+
+    @media (max-width: 600px) {
+      font-size: $font-size-sm;
+    }
+  }
+
+  &__desc {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+  }
+
+  &__desc-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    font-weight: $font-weight-normal;
+
+    @media (max-width: 600px) {
+      font-size: 0.72rem;
+      gap: 8px;
+    }
+  }
+
+  &__desc-bullet {
+    color: var(--color-accent);
+    font-size: 1.1rem;
+    font-weight: $font-weight-bold;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  &__connect-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-sm;
+    align-self: flex-start;
+    margin-top: auto;
+    padding: 9px $space-lg;
+    background: var(--color-accent);
+    color: var(--text-inverse);
+    border: none;
+    border-radius: $radius-full;
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    line-height: 1;
+    cursor: pointer;
+    transition: all $transition-fast;
+    box-shadow: var(--shadow-sm);
+    min-width: 150px;
+
+    &:hover {
+      background: var(--color-accent-dark);
+      box-shadow: var(--shadow-md);
+      padding-right: $space-xl;
+
+      .biz-tile__connect-arrow {
+        transform: translateX(6px);
+      }
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    @media (max-width: 600px) {
+      padding: 8px $space-md;
+      font-size: 0.8rem;
+      min-width: 130px;
+      gap: $space-xs;
+    }
+  }
+
+  &__connect-arrow {
+    font-size: 1.1rem;
+    line-height: 1;
+    transition: transform $transition-normal;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  &__expandable {
+    overflow: hidden;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
   }
 
   // Always-visible contact info
@@ -264,16 +546,17 @@
 
   &__socials {
     display: flex;
-    gap: $space-xs;
+    gap: $space-sm;
     flex-wrap: wrap;
-    margin-top: $space-xs;
+    justify-content: center;
+    padding: $space-lg $space-xl;
   }
 
   &__social {
     @include flex-center;
-    width: 42px;
-    height: 42px;
-    border-radius: $radius-lg;
+    width: 46px;
+    height: 46px;
+    border-radius: $radius-xl;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     text-decoration: none;
@@ -283,9 +566,14 @@
     padding: 0;
     outline: none;
     -webkit-tap-highlight-color: transparent;
-    transition: transform $transition-fast, box-shadow $transition-fast;
-    &:hover  { transform: scale(1.12); box-shadow: var(--shadow-sm); }
-    &:active { transform: scale(0.94); }
+    transition: all $transition-fast;
+    &:hover  { transform: scale(1.15); box-shadow: var(--shadow-md); border-color: var(--border-strong); }
+    &:active { transform: scale(0.92); }
+
+    @media (max-width: 600px) {
+      width: 38px;
+      height: 38px;
+    }
 
     // button variant — identical look to link
     &--btn { background: var(--bg-secondary); }
@@ -487,3 +775,187 @@
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
+
+
+// ── Business Detail Modal ─────────────────────────────────────────────────────
+.biz-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: $z-modal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-xl;
+  overflow-y: auto;
+
+  @media (max-width: 768px) {
+    padding: 0;
+  }
+}
+
+.biz-modal {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  background: var(--bg-card);
+  border-radius: $radius-2xl;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    max-height: 100vh;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  &__close {
+    position: absolute;
+    top: $space-lg;
+    right: $space-lg;
+    z-index: 10;
+    @include flex-center;
+    width: 42px;
+    height: 42px;
+    border-radius: $radius-full;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.9);
+      transform: scale(1.1);
+    }
+  }
+
+  &__gallery {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    background: #000;
+    overflow: hidden;
+    border-top: 1px solid var(--border-color);
+  }
+
+  &__gallery-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: blur(30px) brightness(0.7);
+    transform: scale(1.15);
+    opacity: 0.6;
+  }
+
+  &__gallery-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    z-index: 1;
+    padding: $space-sm;
+  }
+
+  &__info {
+    padding: $space-xl $space-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $space-lg;
+    border-bottom: 2px solid var(--border-color);
+
+    @media (max-width: 600px) {
+      padding: $space-lg;
+      gap: $space-md;
+    }
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: $space-sm;
+  }
+
+  &__logo {
+    width: 96px;
+    height: 96px;
+    border-radius: $radius-full;
+    object-fit: cover;
+    border: 4px solid var(--border-strong);
+    box-shadow: var(--shadow-lg);
+  }
+
+  &__name {
+    font-family: $font-display;
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.2;
+
+    @media (max-width: 600px) {
+      font-size: $font-size-2xl;
+    }
+  }
+
+  &__tagline {
+    font-size: $font-size-base;
+    color: var(--text-muted);
+    margin: 0;
+    font-weight: $font-weight-medium;
+  }
+
+  &__socials {
+    display: flex;
+    gap: $space-sm;
+    flex-wrap: nowrap;
+    justify-content: center;
+    overflow-x: auto;
+    padding: $space-xs 0;
+
+    // Hide scrollbar
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__social {
+    @include flex-center;
+    width: 56px;
+    height: 56px;
+    border-radius: $radius-full;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0;
+    transition: all $transition-fast;
+    flex-shrink: 0;
+
+    &:hover {
+      transform: scale(1.15);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--border-strong);
+      background: var(--bg-card);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    @media (max-width: 600px) {
+      width: 48px;
+      height: 48px;
+    }
+  }
+}
