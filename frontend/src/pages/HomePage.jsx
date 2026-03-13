@@ -177,10 +177,18 @@ const renderSocialIcon = (link, size = 24) => {
   return color ? <PlatformIcon size={size} color={color} /> : <PlatformIcon size={size} />;
 };
 
-// ── Business Detail Modal ──────────────────────────────────────────────────
+// ── Business Detail Modal ──────────────────────────────────────────
+const slideVariants = {
+  enter:  (d) => ({ x: d > 0 ? '100%' : '-100%', opacity: 0 }),
+  center:       { x: 0, opacity: 1 },
+  exit:   (d) => ({ x: d > 0 ? '-100%' : '100%', opacity: 0 }),
+};
+
 const BizDetailModal = ({ biz, onClose, onContact }) => {
-  const [slideIdx, setSlideIdx] = useState(0);
-  const touchStartX = useRef(null);
+  const [[slideIdx, slideDir], setSlide] = useState([0, 0]);
+  const [userPaused, setUserPaused] = useState(false);
+  const pauseTimerRef = useRef(null);
+  const touchStartX   = useRef(null);
 
   const gallery = (biz?.gallery || []).filter(g => g.url);
   const isContactLink = (s) =>
@@ -205,26 +213,40 @@ const BizDetailModal = ({ biz, onClose, onContact }) => {
       ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(biz.address)}`
       : null);
 
+  // Auto-slide — pauses for 1 min after user manually navigates
   useEffect(() => {
-    if (gallery.length <= 1) return;
+    if (gallery.length <= 1 || userPaused) return;
     const t = setInterval(
-      () => setSlideIdx(i => (i + 1) % gallery.length), 3500
+      () => setSlide(([cur]) => [(cur + 1) % gallery.length, 1]), 3500
     );
     return () => clearInterval(t);
-  }, [gallery.length]);
+  }, [gallery.length, userPaused]);
 
-  const prev = () => setSlideIdx(i => (i - 1 + gallery.length) % gallery.length);
-  const next = () => setSlideIdx(i => (i + 1) % gallery.length);
+  // Cleanup pause timer on unmount
+  useEffect(() => () => clearTimeout(pauseTimerRef.current), []);
+
+  const pauseForMinute = () => {
+    setUserPaused(true);
+    clearTimeout(pauseTimerRef.current);
+    pauseTimerRef.current = setTimeout(() => setUserPaused(false), 60_000);
+  };
+
+  const prev = () => {
+    setSlide(([cur]) => [(cur - 1 + gallery.length) % gallery.length, -1]);
+    pauseForMinute();
+  };
+  const next = () => {
+    setSlide(([cur]) => [(cur + 1) % gallery.length, 1]);
+    pauseForMinute();
+  };
 
   const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
   const onTouchEnd = (e) => {
     if (touchStartX.current === null || gallery.length < 2) return;
     const diff = e.changedTouches[0].clientX - touchStartX.current;
-    if (Math.abs(diff) > 40)
-      setSlideIdx(i => diff < 0
-        ? (i + 1) % gallery.length
-        : (i - 1 + gallery.length) % gallery.length
-      );
+    if (Math.abs(diff) > 40) {
+      diff < 0 ? next() : prev();
+    }
     touchStartX.current = null;
   };
 
@@ -238,6 +260,15 @@ const BizDetailModal = ({ biz, onClose, onContact }) => {
         transition={{ duration: 0.3 }}
         onClick={e => e.stopPropagation()}
       >
+        {/* Mobile top bar: drag handle + close — replaces the absolute close btn */}
+        <div className="biz-modal__topbar">
+          <div className="biz-modal__handle" />
+          <button className="biz-modal__close-mob" onClick={onClose}>
+            <FiX size={20} />
+          </button>
+        </div>
+
+        {/* Desktop-only close button */}
         <button className="biz-modal__close" onClick={onClose}>
           <FiX size={24} />
         </button>
@@ -302,17 +333,25 @@ const BizDetailModal = ({ biz, onClose, onContact }) => {
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
           >
-            <div
+          <div
               key={`bg-${slideIdx}`}
               className="biz-modal__gallery-bg"
               style={{ backgroundImage: `url(${gallery[slideIdx].url})` }}
             />
-            <img
-              key={slideIdx}
-              src={gallery[slideIdx].url}
-              alt={gallery[slideIdx].caption || biz.name}
-              className="biz-modal__gallery-img"
-            />
+            <AnimatePresence custom={slideDir} initial={false}>
+              <motion.img
+                key={slideIdx}
+                src={gallery[slideIdx].url}
+                alt={gallery[slideIdx].caption || biz.name}
+                className="biz-modal__gallery-img"
+                custom={slideDir}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
+              />
+            </AnimatePresence>
             {gallery.length > 1 && (
               <>
                 <button className="biz-modal__gallery-prev" onClick={e => { e.stopPropagation(); prev(); }}>

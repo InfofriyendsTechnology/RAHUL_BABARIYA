@@ -825,6 +825,7 @@
 
   @media (max-width: 768px) {
     padding: 0;
+    align-items: flex-start;
   }
 }
 
@@ -843,11 +844,58 @@
 
   @media (max-width: 768px) {
     max-width: 100%;
-    max-height: 100vh;
+    // Use dvh (real visible height) so the modal never hides behind browser UI
     height: 100vh;
+    height: 100dvh;
+    max-height: 100vh;
+    max-height: 100dvh;
     border-radius: 0;
+    // Push content down past phone notch / status bar
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
+  // ── Mobile top bar (handle + close) ──────────────────────────
+  &__topbar {
+    display: none;
+
+    @media (max-width: 768px) {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px $space-md 8px;
+      flex-shrink: 0;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+  }
+
+  &__handle {
+    width: 36px;
+    height: 4px;
+    background: var(--text-muted);
+    border-radius: 2px;
+    opacity: 0.4;
+  }
+
+  &__close-mob {
+    @include flex-center;
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-full;
+    background: rgba(128, 128, 128, 0.15);
+    color: var(--text-primary);
+    border: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+
+    &:active { transform: scale(0.90); }
+  }
+
+  // Desktop-only absolute close button
   &__close {
     position: absolute;
     top: $space-lg;
@@ -866,6 +914,10 @@
     &:hover {
       background: rgba(0, 0, 0, 0.9);
       transform: scale(1.1);
+    }
+
+    @media (max-width: 768px) {
+      display: none; // replaced by topbar close button on mobile
     }
   }
 

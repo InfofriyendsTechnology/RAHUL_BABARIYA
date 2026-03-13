@@ -9,30 +9,43 @@ const ICON_MAP = { FaInstagram, FaFacebook, FaYoutube, FaWhatsapp };
 // ── Photo Slider ────────────────────────────────────────────────────────────
 const PhotoSlider = ({ images, onImageClick }) => {
   const [[current, dir], setSlide] = useState([0, 0]);
-  const timerRef = useRef(null);
+  const [userPaused,  setUserPaused]  = useState(false);
+  const [hoverPaused, setHoverPaused] = useState(false);
+  const pauseTimerRef = useRef(null);
 
-  const go = useCallback((idx, d) => setSlide([idx, d]), []);
+  // Auto-slide — pauses for 1 min after user interaction, or while hovering
+  useEffect(() => {
+    if (images.length < 2 || userPaused || hoverPaused) return;
+    const t = setInterval(() => {
+      setSlide(([cur]) => [(cur + 1) % images.length, 1]);
+    }, 4500);
+    return () => clearInterval(t);
+  }, [images.length, userPaused, hoverPaused]);
+
+  // Cleanup pause timer on unmount
+  useEffect(() => () => clearTimeout(pauseTimerRef.current), []);
+
+  // Called on every user-triggered navigation — pauses auto for 1 minute
+  const pauseForMinute = useCallback(() => {
+    setUserPaused(true);
+    clearTimeout(pauseTimerRef.current);
+    pauseTimerRef.current = setTimeout(() => setUserPaused(false), 60_000);
+  }, []);
+
+  const go = useCallback((idx, d) => {
+    setSlide([idx, d]);
+    pauseForMinute();
+  }, [pauseForMinute]);
 
   const next = useCallback(() => {
     setSlide(([cur]) => [(cur + 1) % images.length, 1]);
-  }, [images.length]);
+    pauseForMinute();
+  }, [images.length, pauseForMinute]);
 
   const prev = useCallback(() => {
     setSlide(([cur]) => [(cur - 1 + images.length) % images.length, -1]);
-  }, [images.length]);
-
-  // Auto-play
-  const startAuto = useCallback(() => {
-    if (images.length < 2) return;
-    timerRef.current = setInterval(next, 4500);
-  }, [next, images.length]);
-
-  const stopAuto = useCallback(() => clearInterval(timerRef.current), []);
-
-  useEffect(() => {
-    startAuto();
-    return stopAuto;
-  }, [startAuto, stopAuto]);
+    pauseForMinute();
+  }, [images.length, pauseForMinute]);
 
   // Touch swipe
   const touchX = useRef(0);
@@ -60,8 +73,8 @@ const PhotoSlider = ({ images, onImageClick }) => {
   return (
     <div
       className="slider"
-      onMouseEnter={stopAuto}
-      onMouseLeave={startAuto}
+    onMouseEnter={() => setHoverPaused(true)}
+      onMouseLeave={() => setHoverPaused(false)}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
