@@ -423,6 +423,42 @@ const HomePage = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  // Dynamically set favicon + OG image to owner's photo
+  useEffect(() => {
+    const photo = data.owner?.photo;
+    if (!photo) return;
+
+    // Favicon — swap the SVG link for the owner's photo
+    let link = document.querySelector("link[rel='icon']");
+    if (link) { link.href = photo; } else {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      link.href = photo;
+      document.head.appendChild(link);
+    }
+    // Apple touch icon
+    let apple = document.querySelector("link[rel='apple-touch-icon']");
+    if (apple) { apple.href = photo; } else {
+      apple = document.createElement('link');
+      apple.rel = 'apple-touch-icon';
+      apple.href = photo;
+      document.head.appendChild(apple);
+    }
+
+    // OG image + twitter image meta tags
+    const setMeta = (attr, key, value) => {
+      let el = document.querySelector(`meta[${attr}='${key}']`);
+      if (el) { el.setAttribute('content', value); } else {
+        el = document.createElement('meta');
+        el.setAttribute(attr, key);
+        el.setAttribute('content', value);
+        document.head.appendChild(el);
+      }
+    };
+    setMeta('property', 'og:image', photo);
+    setMeta('name', 'twitter:image', photo);
+  }, [data.owner?.photo]);
+
   if (loading) {
     return (
       <div className="page-loader">
