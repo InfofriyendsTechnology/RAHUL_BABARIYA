@@ -1,7 +1,7 @@
 export const DEFAULT_PORTFOLIO = {
   owner: {
     name:     'Rahul Babariya',
-    tagline:  'Photographer & Creative Director',
+    tagline:  'Photographer & Videography Provider',
     bio:      'Capturing life\'s most precious moments through the lens. Owner of Aurpix Studio & Dada Media.',
     photo:    '',
     phone:    '',

@@ -40,7 +40,7 @@ const portfolioSchema = new mongoose.Schema({
   // singleton — always one document
   owner: {
     name:        { type: String, default: 'Rahul Babariya' },
-    tagline:     { type: String, default: 'Photographer & Creative Director' },
+    tagline:     { type: String, default: 'Photographer & Videography Provider' },
     bio:         { type: String, default: '' },
     photo:       { type: String, default: '' },
     phone:       { type: String, default: '' },
