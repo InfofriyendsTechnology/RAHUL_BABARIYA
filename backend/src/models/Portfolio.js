@@ -4,7 +4,12 @@ const socialLinkSchema = new mongoose.Schema({
   platform: String,
   label:    String,
   url:      String,
-  icon:     String,
+  icon:     String, // legacy field
+  iconType: { type: String, default: 'default' },
+  iconName: { type: String, default: 'FaLink' },
+  customIconUrl: String,
+  isVisible: { type: Boolean, default: true },
+  order: { type: Number, default: 0 },
 }, { _id: false });
 
 const serviceSchema = new mongoose.Schema({

@@ -6,9 +6,17 @@ import responseHandler from '../utils/responseHandler.js';
 const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
-  const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+  const allowed = [
+    'image/jpeg',
+    'image/jpg',
+    'image/png',
+    'image/webp',
+    'image/svg+xml',
+    'image/x-icon',
+    'image/vnd.microsoft.icon',
+  ];
   if (allowed.includes(file.mimetype)) cb(null, true);
-  else cb(new Error('Only JPEG, PNG, WebP images allowed.'), false);
+  else cb(new Error('Only JPEG, PNG, WebP, SVG, ICO images allowed.'), false);
 };
 
 export const upload = multer({

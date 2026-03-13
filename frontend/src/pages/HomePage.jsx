@@ -2,10 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FiPhone, FiMapPin, FiDownload, FiCamera, FiSun, FiMoon, FiX,
+  FiChevronLeft, FiChevronRight,
 } from 'react-icons/fi';
 import { FaWhatsapp, FaYoutube, FaFacebook } from 'react-icons/fa';
 import { fetchPortfolio } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
+import { getIconComponent } from '../utils/iconMapping';
 import './HomePage.scss';
 
 // ── Official brand SVG logos ──────────────────────────────────────────────────
@@ -102,7 +104,7 @@ const BizContactPopup = ({ biz, onClose }) => (
             className="contact-sheet__opt contact-sheet__opt--wa"
             onClick={onClose}
           >
-            <span className="cso-icon"><FaWhatsapp size={22} /></span>
+            <span className="cso-icon"><img src="/whatsapp-icon.png" alt="WhatsApp" style={{ width: 28, height: 28, objectFit: 'contain' }} /></span>
             <span className="cso-label">WhatsApp Chat</span>
           </a>
         )}
@@ -127,14 +129,77 @@ const BRAND_COLOR = {
   maps:      null,       // component has own color
 };
 
+const inferPlatformFromUrlOrLabel = (rawUrl = '', rawLabel = '') => {
+  const u = rawUrl.toLowerCase();
+  const l = rawLabel.toLowerCase();
+  if (u.startsWith('tel:') || l.includes('call') || l.includes('phone') || l.includes('contact')) return 'contact';
+  if (u.includes('instagram.com') || l.includes('instagram')) return 'instagram';
+  if (u.includes('facebook.com') || u.includes('fb.com') || l.includes('facebook')) return 'facebook';
+  if (u.includes('youtube.com') || u.includes('youtu.be') || l.includes('youtube')) return 'youtube';
+  if (u.includes('wa.me') || u.includes('whatsapp.com') || l.includes('whatsapp')) return 'whatsapp';
+  if (u.includes('maps.google.') || u.includes('google.com/maps') || l.includes('map') || l.includes('address') || l.includes('location')) return 'maps';
+  if (u.includes('t.me') || u.includes('telegram.me') || u.includes('telegram.org') || l.includes('telegram')) return 'telegram';
+  if (u.includes('twitter.com') || u.includes('x.com') || l.includes('twitter') || l === 'x') return 'twitter';
+  if (u.includes('linkedin.com') || l.includes('linkedin')) return 'linkedin';
+  if (u.includes('tiktok.com') || l.includes('tiktok')) return 'tiktok';
+  if (u.includes('snapchat.com') || l.includes('snapchat')) return 'snapchat';
+  if (u.includes('pinterest.com') || l.includes('pinterest')) return 'pinterest';
+  return 'website';
+};
+
+const renderSocialIcon = (link, size = 24) => {
+  const inferredPlatform = inferPlatformFromUrlOrLabel(link?.url || '', link?.label || '');
+  const platform = link?.platform || inferredPlatform;
+  if (link?.iconType === 'uploaded' && link?.customIconUrl) {
+    return (
+      <img
+        src={link.customIconUrl}
+        alt={link?.label || 'Link'}
+        style={{ width: size, height: size, objectFit: 'contain', display: 'block' }}
+      />
+    );
+  }
+
+  const savedIconName = link?.iconName || link?.icon;
+  const isGenericLinkIcon = savedIconName === 'FaLink' || savedIconName === 'FiLinkIcon';
+  if (savedIconName && !isGenericLinkIcon) {
+    const DynamicIcon = getIconComponent(savedIconName);
+    return <DynamicIcon size={size} />;
+  }
+
+  const PlatformIcon = ICON_MAP[platform] || null;
+  if (!PlatformIcon) {
+    const fallbackName = platform === 'contact' ? 'FaPhone' : (savedIconName || 'FaLink');
+    const FallbackIcon = getIconComponent(fallbackName);
+    return <FallbackIcon size={size} />;
+  }
+  const color = BRAND_COLOR[platform];
+  return color ? <PlatformIcon size={size} color={color} /> : <PlatformIcon size={size} />;
+};
+
 // ── Business Detail Modal ──────────────────────────────────────────────────
 const BizDetailModal = ({ biz, onClose, onContact }) => {
   const [slideIdx, setSlideIdx] = useState(0);
   const touchStartX = useRef(null);
 
   const gallery = (biz?.gallery || []).filter(g => g.url);
-  const socials = (biz?.socialLinks || []).filter(s => s.url && s.platform !== 'maps');
-  const mapsEntry = (biz?.socialLinks || []).find(s => s.platform === 'maps' && s.url);
+  const isContactLink = (s) =>
+    inferPlatformFromUrlOrLabel(s?.url || '', s?.label || '') === 'contact';
+  const isWhatsAppLink = (s) =>
+    s?.platform === 'whatsapp'
+    || inferPlatformFromUrlOrLabel(s?.url || '', s?.label || '') === 'whatsapp'
+    || /whats\s*app/i.test(s?.label || '');
+  const contactSocial = (biz?.socialLinks || []).find(isContactLink);
+  const whatsappSocial = (biz?.socialLinks || []).find(isWhatsAppLink);
+  const socials = (biz?.socialLinks || []).filter(
+    s => s.url
+      && inferPlatformFromUrlOrLabel(s?.url || '', s?.label || '') !== 'maps'
+      && !isWhatsAppLink(s)
+      && !isContactLink(s)
+  );
+  const mapsEntry = (biz?.socialLinks || []).find(
+    s => s.url && inferPlatformFromUrlOrLabel(s?.url || '', s?.label || '') === 'maps'
+  );
   const bizMapsUrl = mapsEntry?.url
     || (biz?.address
       ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(biz.address)}`
@@ -147,6 +212,9 @@ const BizDetailModal = ({ biz, onClose, onContact }) => {
     );
     return () => clearInterval(t);
   }, [gallery.length]);
+
+  const prev = () => setSlideIdx(i => (i - 1 + gallery.length) % gallery.length);
+  const next = () => setSlideIdx(i => (i + 1) % gallery.length);
 
   const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
   const onTouchEnd = (e) => {
@@ -192,7 +260,11 @@ const BizDetailModal = ({ biz, onClose, onContact }) => {
                 onClick={() => { onContact(biz); onClose(); }}
                 title="Contact"
               >
-                <FaWhatsapp size={24} color="#25D366" />
+                {contactSocial
+                  ? renderSocialIcon(contactSocial, 36)
+                  : (whatsappSocial
+                    ? renderSocialIcon(whatsappSocial, 36)
+                    : <img src="/whatsapp-icon.png" alt="WhatsApp" style={{ width: 36, height: 36, objectFit: 'contain', display: 'block' }} />)}
               </button>
             )}
             {bizMapsUrl && (
@@ -203,12 +275,10 @@ const BizDetailModal = ({ biz, onClose, onContact }) => {
                 className="biz-modal__social"
                 title="View on Google Maps"
               >
-                <MapsIcon size={24} />
+                {mapsEntry ? renderSocialIcon(mapsEntry, 36) : <MapsIcon size={36} />}
               </a>
             )}
             {socials.map((s, i) => {
-              const Icon = ICON_MAP[s.platform] || FaYoutube;
-              const color = BRAND_COLOR[s.platform];
               return (
                 <a
                   key={i}
@@ -218,7 +288,7 @@ const BizDetailModal = ({ biz, onClose, onContact }) => {
                   className="biz-modal__social"
                   title={s.label}
                 >
-                  {color ? <Icon size={24} color={color} /> : <Icon size={24} />}
+                  {renderSocialIcon(s, 36)}
                 </a>
               );
             })}
@@ -243,6 +313,16 @@ const BizDetailModal = ({ biz, onClose, onContact }) => {
               alt={gallery[slideIdx].caption || biz.name}
               className="biz-modal__gallery-img"
             />
+            {gallery.length > 1 && (
+              <>
+                <button className="biz-modal__gallery-prev" onClick={e => { e.stopPropagation(); prev(); }}>
+                  <FiChevronLeft size={22} />
+                </button>
+                <button className="biz-modal__gallery-next" onClick={e => { e.stopPropagation(); next(); }}>
+                  <FiChevronRight size={22} />
+                </button>
+              </>
+            )}
           </div>
         )}
       </motion.div>
@@ -389,6 +469,13 @@ const HomePage = () => {
                 </div>
                 <h3 className="tree-node__biz-name">{businesses.aurpix.name}</h3>
                 <p className="tree-node__biz-tag">{businesses.aurpix.tagline}</p>
+                {businesses.aurpix.services?.length > 0 && (
+                  <div className="tree-node__niches">
+                    {businesses.aurpix.services.map((s, i) => (
+                      <span key={i} className="tree-node__niche-chip">{s.name}</span>
+                    ))}
+                  </div>
+                )}
               </motion.div>
             )}
 
@@ -408,6 +495,13 @@ const HomePage = () => {
                 </div>
                 <h3 className="tree-node__biz-name">{businesses.dada.name}</h3>
                 <p className="tree-node__biz-tag">{businesses.dada.tagline}</p>
+                {businesses.dada.services?.length > 0 && (
+                  <div className="tree-node__niches">
+                    {businesses.dada.services.map((s, i) => (
+                      <span key={i} className="tree-node__niche-chip">{s.name}</span>
+                    ))}
+                  </div>
+                )}
               </motion.div>
             )}
           </div>
