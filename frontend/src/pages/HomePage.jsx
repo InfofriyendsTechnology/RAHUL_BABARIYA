@@ -104,7 +104,7 @@ const BizContactPopup = ({ biz, onClose }) => (
             className="contact-sheet__opt contact-sheet__opt--wa"
             onClick={onClose}
           >
-            <span className="cso-icon"><img src="/whatsapp-icon.png" alt="WhatsApp" style={{ width: 28, height: 28, objectFit: 'contain' }} /></span>
+            <span className="cso-icon"><FaWhatsapp size={20} color="#25D366" /></span>
             <span className="cso-label">WhatsApp Chat</span>
           </a>
         )}
@@ -289,13 +289,17 @@ const BizDetailModal = ({ biz, onClose, onContact }) => {
               <button
                 className="biz-modal__social"
                 onClick={() => { onContact(biz); onClose(); }}
-                title="Contact"
               >
-                {contactSocial
-                  ? renderSocialIcon(contactSocial, 36)
-                  : (whatsappSocial
-                    ? renderSocialIcon(whatsappSocial, 36)
-                    : <img src="/whatsapp-icon.png" alt="WhatsApp" style={{ width: 36, height: 36, objectFit: 'contain', display: 'block' }} />)}
+                <span className="biz-modal__social-icon">
+                  {contactSocial
+                    ? renderSocialIcon(contactSocial, 52)
+                    : (whatsappSocial
+                      ? renderSocialIcon(whatsappSocial, 52)
+                      : <img src="/whatsapp-icon.png" alt="WhatsApp" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />)}
+                </span>
+                <span className="biz-modal__social-label">
+                  {contactSocial?.label || whatsappSocial?.label || 'WhatsApp'}
+                </span>
               </button>
             )}
             {bizMapsUrl && (
@@ -304,25 +308,29 @@ const BizDetailModal = ({ biz, onClose, onContact }) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="biz-modal__social"
-                title="View on Google Maps"
               >
-                {mapsEntry ? renderSocialIcon(mapsEntry, 36) : <MapsIcon size={36} />}
+                <span className="biz-modal__social-icon">
+                  {mapsEntry ? renderSocialIcon(mapsEntry, 52) : <MapsIcon size={52} />}
+                </span>
+                <span className="biz-modal__social-label">
+                  {mapsEntry?.label || 'Maps'}
+                </span>
               </a>
             )}
-            {socials.map((s, i) => {
-              return (
-                <a
-                  key={i}
-                  href={s.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="biz-modal__social"
-                  title={s.label}
-                >
-                  {renderSocialIcon(s, 36)}
-                </a>
-              );
-            })}
+            {socials.map((s, i) => (
+              <a
+                key={i}
+                href={s.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="biz-modal__social"
+              >
+                <span className="biz-modal__social-icon">
+                  {renderSocialIcon(s, 52)}
+                </span>
+                <span className="biz-modal__social-label">{s.label}</span>
+              </a>
+            ))}
           </div>
         </div>
 
